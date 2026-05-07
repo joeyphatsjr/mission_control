@@ -12,7 +12,7 @@ open space-explorer/index.html
 
 ## Architecture
 
-The entire app is a single HTML file (~845 lines) with embedded CSS and JavaScript. No bundler, no framework, no npm.
+The entire app is a single HTML file (~912 lines) with embedded CSS and JavaScript. No bundler, no framework, no npm.
 
 **Four tabs / sections** (tab switching via `showTab()`):
 - **Missions** — upcoming + recent launch cards with live countdowns
@@ -35,5 +35,10 @@ The entire app is a single HTML file (~845 lines) with embedded CSS and JavaScri
 - `initGlobe()` — lazily initializes the globe on first tab visit
 - `tickAll()` — countdown ticker, runs every 1 s via `setInterval`
 - `orbPos(...)` — simple Keplerian orbital position math for satellite animation
+- `vehicleImg(name, launchId)` — returns a Flickr CDN URL for the rocket vehicle; matches by substring against `VEHICLE_IMGS`
 
-**CSS design tokens** are defined as CSS variables on `:root` (dark space theme, orange accent `#f97316`). Font families: Barlow Condensed (`--fd`), JetBrains Mono (`--fm`), Barlow (`--fu`).
+**CSS design tokens** are defined as CSS variables on `:root` (dark space theme, cyan accent `#22d3ee`). Font families: Oxanium (`--fd`), JetBrains Mono (`--fm`), DM Sans (`--fu`).
+
+## Image CDN constraint
+
+All rocket images must use `live.staticflickr.com` URLs. Wikimedia (`upload.wikimedia.org`) and NASA CDN (`images-assets.nasa.gov`) are blocked when the app is opened via `file://`. All `<img>` tags use `loading="eager"` — `loading="lazy"` is broken on `file://` because `IntersectionObserver` never fires. The `onerror` handler always sets `this.onerror=null` first to prevent infinite fallback loops.
